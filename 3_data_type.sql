@@ -36,10 +36,47 @@ insert into author(id, email) values(11, 'dds@naver.com');
 insert into author(id, email, role) values(12, 'sffs@naver.com', 'admin');
 
 
+-- date / datetime
+-- 날짜 타입의 입력, 수정, 조회시에 문자열 형식을 사용
+alter table author add column birthday date;
+alter table post add column created_time datetime;
+insert into post(id, title, author_id, created_time) values(10, 'hello', 3, '2025-05-23 14:36:30');
+alter table post add column created_time datetime default current_timestamp();
+
+-- 비교연산자
+select * from author where id>=2 and id<=4;
+select * from author where id between 2 and 4; -- 위 구문과 같은 구문
+select * from author where id in(2, 3, 4);
+
+-- like : 특정 문자를 포함하는 데이터를 조회하기 위한 키워드
+select * from post where title like 'h%';
+select * from post where title like '%h%';
+select * from post where title like '%h';
+
+-- regexp : 정규 표현식을 활용한 조회
+-- 하나라도 알파벳 소문자가 들어 있는지
+select * from post where title regexp '[a-z]';
+-- 하나라도 한글이 있는지
+select * from post where title regexp '[가-힣]'; 
 
 
+-- 숫자 -> 날짜
+select cast(20250523 as date) (from author); --> 2025-05-23
+-- 문자 -> 날짜
+select cast('20250523' as date); --> 2025-05-23
+-- 문자 -> 숫자
+select cast('12' as int); --> 버전에 따라 지원 유무 다름
+select cast('12' as unsigned); --> 12
 
+-- 날짜조회 방법
+-- like패턴, 부등호 활용, datet_format
+select * from post where created_time like '2025-05%'; -- 문자열처럼 조회
+-- 5월 1일부터 5월 20일까지, 날짜만 입력 시 시간 부분은 00:00:00이 자동으로 붙음
+select * from post where created_time >= '2025-05-01' and created_time < '2025-05-21';
 
+select date_format(created_time, '%Y-%m-%d') from post;
+select date_format(created_time, '%H-%i-%s') from post;
+select * from post where date_format(created_time, '%m')='05';
 
-
-
+-- date_format을 통째로 캐스팅 '문자' -> 숫자
+select * from post where cast(date_format(created_time, '%m') as unsigned)=5;
