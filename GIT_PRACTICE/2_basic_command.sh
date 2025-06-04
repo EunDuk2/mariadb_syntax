@@ -56,5 +56,5 @@ git stash list
 # 저장한 목록 전체 삭제
 git stash clear
 
-
+# git
 
